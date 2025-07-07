@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:9999"
+    volumes:
+      - ./app:/app
+      - ./results:/app/results
+    env_file:
+      - .env
+    restart: unless-stopped
