@@ -2,7 +2,7 @@ import os
 import io
 from PIL import Image
 from pdf2image import convert_from_bytes
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for, session
 from datetime import datetime
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -15,6 +15,7 @@ model = genai.GenerativeModel("models/gemini-1.5-flash")
 
 # Flask setup
 app = Flask(__name__)
+app.secret_key = os.urandom(24)  # Required for session
 UPLOAD_FOLDER = "static/uploads"
 RESULT_FOLDER = "results"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -25,7 +26,7 @@ def index():
     text_output = ""
 
     if request.method == "POST":
-         #Get industry and criteria from form
+        # Get industry and criteria from form
         industry = request.form.get("industry", "").strip()
         criteria = request.form.get("criteria", "").strip()
 
@@ -37,7 +38,7 @@ def index():
                 file_ext = filename.rsplit(".", 1)[-1].lower()
 
                 try:
-                    #Convert PDF to images or load image directly
+                    # Convert PDF to images or load image directly
                     if file_ext == "pdf":
                         images = convert_from_bytes(file_bytes)
                     else:
@@ -52,7 +53,7 @@ def index():
                         ])
                         full_text += f"\n--- {filename} - Page {i+1} ---\n{response.text.strip()}"
 
-                    #  Evaluate CV match if industry and criteria are provided
+                    # Evaluate CV match if industry and criteria are provided
                     if industry and criteria:
                         eval_prompt = f"""
 Bạn là chuyên gia tuyển dụng. CV sau đây có phù hợp với ngành "{industry}" và các tiêu chí "{criteria}" không?
@@ -72,11 +73,12 @@ CV:
                 except Exception as e:
                     text_output += f"\n--- {filename} ---\nError processing: {str(e)}\n"
 
-        # Write results to .txt file
-#         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-#         result_file = os.path.join(RESULT_FOLDER, f"{timestamp}.txt")
-#         with open(result_file, "w", encoding="utf-8") as f:
-#             f.write(text_output)
+        # Save result to session and redirect to clear POST
+        session['text_output'] = text_output
+        return redirect(url_for('index'))
+
+    elif request.method == "GET":
+        text_output = session.pop('text_output', "")
 
     return render_template("index.html", text=text_output)
 

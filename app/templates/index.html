@@ -3,19 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>Gemini OCR CV Filter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 30px;
+            color: #333;
+        }
+
+        h2 {
+            color: #2c3e50;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        hr {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        pre {
+            background: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            max-width: 1000px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 <body>
+
 <h2>Upload CV và chọn ngành + tiêu chí</h2>
 
 <form method="post" enctype="multipart/form-data">
-    <label for="industry">Ngành nghề:</label><br>
-    <input type="text" name="industry" placeholder="VD: Công nghệ thông tin" required><br><br>
+    <label for="industry">Ngành nghề:</label>
+    <input type="text" name="industry" placeholder="VD: Công nghệ thông tin" required>
 
-    <label for="criteria">Tiêu chí tuyển dụng:</label><br>
-    <textarea name="criteria" rows="4" cols="50" placeholder="VD: Biết Python, có 2 năm kinh nghiệm, ReactJS..." required></textarea><br><br>
+    <label for="criteria">Tiêu chí tuyển dụng:</label>
+    <textarea name="criteria" rows="4" placeholder="VD: Biết Python, có 2 năm kinh nghiệm, ReactJS..." required></textarea>
 
-    <label for="file">Chọn file PDF/Ảnh (có thể chọn nhiều):</label><br>
-    <input type="file" name="file" multiple required><br><br>
+    <label for="file">Chọn file PDF/Ảnh (có thể chọn nhiều):</label>
+    <input type="file" name="file" multiple required>
 
     <button type="submit">Phân tích CV với Gemini</button>
 </form>
@@ -24,5 +90,6 @@
 
 <h3>Kết quả phân tích OCR & đánh giá phù hợp:</h3>
 <pre>{{ text }}</pre>
+
 </body>
 </html>
